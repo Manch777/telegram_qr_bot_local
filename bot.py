@@ -97,7 +97,6 @@ async def main():
     app.add_handler(MessageHandler(filters.COMMAND, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_TITLE, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_TITLE, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.PINNED_MESSAGE, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_PHOTO, start))
@@ -112,13 +111,6 @@ async def main():
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_STARTED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_ENDED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_SCHEDULED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.STORY, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_HIDDEN, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_UNHIDDEN, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_CREATED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_EDITED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_DELETED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_PINNED, start))
 
     await app.run_polling()
 
