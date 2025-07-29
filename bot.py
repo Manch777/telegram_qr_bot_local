@@ -106,9 +106,16 @@ def main():
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_STARTED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_ENDED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_SCHEDULED, start))
+    # 👇 Callback обработчик — ДО MessageHandler
     app.add_handler(CallbackQueryHandler(button_handler, pattern="^check$"))
 
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, start))
+    app.add_handler(MessageHandler(filters.COMMAND, start))
 
+    # 👇 Только если нужен WebApp
+    app.add_handler(MessageHandler(filters.ALL, handle_webapp_data))
+    
+    logger.info("Bot started successfully")
     app.run_polling()
 
 
