@@ -100,7 +100,6 @@ async def main():
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_TITLE, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.PINNED_MESSAGE, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_PHOTO, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.SUPERGROUP_CHAT_CREATED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.CHANNEL_CHAT_CREATED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.MESSAGE_AUTO_DELETE_TIMER_CHANGED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.PROXIMITY_ALERT_TRIGGERED, start))
