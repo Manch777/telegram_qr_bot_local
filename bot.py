@@ -62,6 +62,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # 📌 Обработка данных из WebApp QR сканера
 async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.effective_message.web_app_data:
+        return
+
     data = update.effective_message.web_app_data.data  # данные из сканера
     user_id = int(data)
     if check_user(user_id):
@@ -89,10 +92,9 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("admin", admin))
     app.add_handler(CommandHandler("report", report))
-    app.add_handler(MessageHandler(filters.WEB_APP_DATA, handle_webapp_data))
+    app.add_handler(MessageHandler(filters.ALL, handle_webapp_data))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, start))
     app.add_handler(MessageHandler(filters.COMMAND, start))
-    app.add_handler(MessageHandler(filters.ALL, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_TITLE, start))
@@ -117,27 +119,6 @@ async def main():
     app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_EDITED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_DELETED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_PINNED, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
-
-    app.add_handler(MessageHandler(filters.ALL, start))
 
     await app.run_polling()
 
