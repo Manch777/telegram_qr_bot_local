@@ -7,7 +7,7 @@ import csv
 from db import init_db, save_user, user_exists, get_all_users, mark_checked_in, is_checked_in
 
 # Настройки
-BOT_TOKEN = os.getenv("8239614733:AAF-oq2KCy04jcxPflNjdtcTOOWBNEV7_K0")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 TELEGRAM_CHANNEL_USERNAME = 'https://t.me/test1test123456test'
 TELEGRAM_CHANNEL_LINK = f'https://t.me/test1test123456test'
 INSTAGRAM_LINK = 'https://instagram.com/manch_artist'
