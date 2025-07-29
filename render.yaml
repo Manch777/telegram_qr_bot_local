@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: telegram-qr-bot
+    runtime: python
+    pythonVersion: 3.10.12
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python bot.py"
+    envVars:
+      - key: BOT_TOKEN
+        value: твой_токен_от_BotFather
