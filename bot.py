@@ -30,7 +30,7 @@ init_db()
 # 📌 /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("🔗 Telegram канал", url="https://t.me/your_channel")],
+        [InlineKeyboardButton("🔗 Telegram канал", url="https://t.me/test1test123456test")],
         [InlineKeyboardButton("📸 Instagram", url="https://instagram.com/your_instagram")],
         [InlineKeyboardButton("✅ Я подписался", callback_data="check")],
     ]
