@@ -12,6 +12,7 @@ from telegram.ext import (
     filters,
 )
 from db import init_db, save_user, check_user, mark_checked_in, get_report
+from telegram.ext import CallbackQueryHandler
 import pyqrcode
 import io
 
@@ -105,6 +106,8 @@ def main():
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_STARTED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_ENDED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_SCHEDULED, start))
+    app.add_handler(CallbackQueryHandler(button_handler, pattern="^check$"))
+
 
     app.run_polling()
 
