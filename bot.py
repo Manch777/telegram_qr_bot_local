@@ -106,8 +106,8 @@ async def main():
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_ENDED, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_SCHEDULED, start))
 
-    await app.run_polling()
+    app.run_polling()
+
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    main()
