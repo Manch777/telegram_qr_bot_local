@@ -11,7 +11,7 @@ from telegram.ext import (
     ContextTypes,
     filters,
 )
-from db import init_db, save_user, check_user, mark_checked_in, get_report
+from db import init_db, save_user, check_user, mark_checked_in, get_report, get_all_users
 from telegram.ext import CallbackQueryHandler
 from telegram.ext import filters as telegram_filters
 
@@ -81,6 +81,20 @@ async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE)
     else:
         await update.message.reply_text("❌ Пользователь не найден.")
 
+# 📌 /list
+async def list_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    users = get_all_users()
+    if not users:
+        await update.message.reply_text("Пользователей нет в базе.")
+        return
+
+    text = "📋 Все пользователи:\n"
+    for user_id, username, checked_in in users:
+        status = "✅" if checked_in else "❌"
+        text += f"{status} {username} ({user_id})\n"
+
+    await update.message.reply_text(text[:4096])  # Telegram ограничение
+
 # 📌 /admin
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = "https://manch777.github.io/qr-scanner/"  # заменить
@@ -104,6 +118,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("admin", admin))
     app.add_handler(CommandHandler("report", report))
+    app.add_handler(CommandHandler("list", list_users))
 
 
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, start))
