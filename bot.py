@@ -81,6 +81,18 @@ async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE)
     else:
         await update.message.reply_text("❌ Пользователь не найден.")
 
+# 📌 /admin
+async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = "https://manch777.github.io/qr-scanner/"  # заменить
+    keyboard = [[InlineKeyboardButton("📷 Открыть сканер", web_app=WebAppInfo(url=url))]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Сканируй QR-коды участников:", reply_markup=reply_markup)
+
+# 📌 /report
+async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    count, checked_in = get_report()
+    await update.message.reply_text(f"👥 Зарегистрировано: {count}\n✅ Пришли: {checked_in}")
+
 # 📌 /list
 async def list_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
     users = get_all_users()
@@ -94,18 +106,6 @@ async def list_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text += f"{status} {username} ({user_id})\n"
 
     await update.message.reply_text(text[:4096])  # Telegram ограничение
-
-# 📌 /admin
-async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    url = "https://manch777.github.io/qr-scanner/"  # заменить
-    keyboard = [[InlineKeyboardButton("📷 Открыть сканер", web_app=WebAppInfo(url=url))]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Сканируй QR-коды участников:", reply_markup=reply_markup)
-
-# 📌 /report
-async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    count, checked_in = get_report()
-    await update.message.reply_text(f"👥 Зарегистрировано: {count}\n✅ Пришли: {checked_in}")
 
 # 📌 Запуск бота
 def main():
