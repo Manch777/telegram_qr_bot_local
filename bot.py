@@ -80,6 +80,7 @@ async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await update.message.reply_text(f"✅ Пользователь {user_id} найден и отмечен как пришедший.")
     else:
         await update.message.reply_text("❌ Пользователь не найден.")
+    
 
 # 📌 /admin
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -93,36 +94,19 @@ async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     count, checked_in = get_report()
     await update.message.reply_text(f"👥 Зарегистрировано: {count}\n✅ Пришли: {checked_in}")
 
-# 📌 /list
-async def list_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    users = get_all_users()
-    if not users:
-        await update.message.reply_text("Пользователей нет в базе.")
-        return
-
-    text = "📋 Все пользователи:\n"
-    for user_id, username, checked_in in users:
-        status = "✅" if checked_in else "❌"
-        text += f"{status} {username} ({user_id})\n"
-
-    await update.message.reply_text(text[:4096])  # Telegram ограничение
-
 # 📌 Запуск бота
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
     
-
-
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("admin", admin))
-    app.add_handler(CommandHandler("report", report))
-    app.add_handler(CommandHandler("list", list_users))
-
     # 👇 Callback обработчик — ДО MessageHandler
     app.add_handler(CallbackQueryHandler(button_handler, pattern="^check$"))
     app.add_handler(MessageHandler(filters.TEXT, handle_webapp_data))
 
-    
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("admin", admin))
+    app.add_handler(CommandHandler("report", report))
+
+
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_TITLE, start))
