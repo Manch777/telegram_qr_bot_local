@@ -99,12 +99,12 @@ def main():
     
     # 👇 Callback обработчик — ДО MessageHandler
     app.add_handler(CallbackQueryHandler(button_handler, pattern="^check$"))
+    app.add_handler(MessageHandler(filters.TEXT, handle_webapp_data))
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("admin", admin))
     app.add_handler(CommandHandler("report", report))
 
-    app.add_handler(MessageHandler(filters.TEXT, handle_webapp_data))
 
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, start))
     app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, start))
