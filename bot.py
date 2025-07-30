@@ -13,7 +13,6 @@ from telegram.ext import (
 )
 from db import init_db, save_user, check_user, mark_checked_in, get_report, get_all_users
 from telegram.ext import CallbackQueryHandler
-from telegram.ext import filters as telegram_filters
 
 import pyqrcode
 import io
