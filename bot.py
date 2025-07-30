@@ -13,6 +13,8 @@ from telegram.ext import (
 )
 from db import init_db, save_user, check_user, mark_checked_in, get_report
 from telegram.ext import CallbackQueryHandler
+from telegram.ext import filters as telegram_filters
+
 import pyqrcode
 import io
 
@@ -63,11 +65,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # 📌 Обработка данных из WebApp QR сканера
 async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not update.effective_message.web_app_data:
+    if not update.message or not update.message.web_app_data:
         return
 
-    data = update.effective_message.web_app_data.data  # данные из сканера
-    user_id = int(data)
+    data = update.message.web_app_data.data
+    try:
+        user_id = int(data.strip())
+    except ValueError:
+        await update.message.reply_text("❌ Неверный формат данных.")
+        return
+
     if check_user(user_id):
         mark_checked_in(user_id)
         await update.message.reply_text(f"✅ Пользователь {user_id} найден и отмечен как пришедший.")
@@ -76,7 +83,7 @@ async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 # 📌 /admin
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    url = "https://qr-scanner-nine-pink.vercel.app/"  # заменить
+    url = "https://manch777.github.io/qr-scanner/"  # заменить
     keyboard = [[InlineKeyboardButton("📷 Открыть сканер", web_app=WebAppInfo(url=url))]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Сканируй QR-коды участников:", reply_markup=reply_markup)
@@ -110,8 +117,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, start))
     app.add_handler(MessageHandler(filters.COMMAND, start))
 
-    # 👇 Только если нужен WebApp
-    app.add_handler(MessageHandler(filters.ALL, handle_webapp_data))
+    app.add_handler(MessageHandler(filters.TEXT, handle_webapp_data))
     
     logger.info("Bot started successfully")
     app.run_polling()
