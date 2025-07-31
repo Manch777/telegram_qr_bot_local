@@ -13,10 +13,11 @@ from telegram.ext import (
 )
 from db import init_db, save_user, check_user, mark_checked_in, get_report, get_all_users
 from telegram.ext import CallbackQueryHandler
-
+from dotenv import load_dotenv
 import pyqrcode
 import io
 
+load_dotenv()
 # Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -39,19 +40,26 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Подпишитесь и нажмите кнопку ниже:", reply_markup=reply_markup)
 
-# 📌 Проверка подписки (заглушка)
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    await query.answer()
 
     user_id = query.from_user.id
     username = query.from_user.username or "no_username"
 
-    # Здесь должна быть реальная проверка подписки (заглушка):
+    channels = ["@test1test123456test"]
     is_subscribed = True
+    for channel in channels:
+        try:
+            member = await context.bot.get_chat_member(chat_id=channel, user_id=user_id)
+            if member.status in ["left", "kicked"]:
+                is_subscribed = False
+                break
+        except Exception as e:
+            logger.error(f"Ошибка при проверке подписки: {e}")
+            is_subscribed = False
+            break
 
     if is_subscribed:
-        # Генерируем QR
         qr = pyqrcode.create(str(user_id))
         buffer = io.BytesIO()
         qr.png(buffer, scale=5)
@@ -62,7 +70,17 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await query.message.reply_text("❌ Вы не подписались на все каналы!")
 
+    # ✅ Отвечаем на callback в конце — чтобы избежать timeouts
+    await query.answer()
+
+
+
 # 📌 Обработка данных из WebApp QR сканера
+
+# Админский Telegram ID (замени на свой ID)
+ADMIN_CHAT_ID = 486487068  # 👈 Вставь свой Telegram ID
+
+
 async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message or not update.message.web_app_data:
         return
@@ -74,11 +92,25 @@ async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await update.message.reply_text("❌ Неверный формат данных.")
         return
 
-    if check_user(user_id):
-        mark_checked_in(user_id)
-        await update.message.reply_text(f"✅ Пользователь {user_id} найден и отмечен как пришедший.")
-    else:
+    user_data = check_user(user_id)
+    if not user_data:
         await update.message.reply_text("❌ Пользователь не найден.")
+        await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=f"❌ QR не найден: {user_id}")
+        return
+
+    checked_in = user_data["checked_in"] == 1
+    username = user_data["username"]
+
+    if checked_in:
+        await update.message.reply_text("⚠️ Пользователь уже прошёл.")
+        await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=f"⚠️ {username} уже прошёл (ID: {user_id})")
+    else:
+        mark_checked_in(user_id)
+        await update.message.reply_text(f"✅ Пользователь {username} найден и отмечен как пришедший.")
+        await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=f"✅ {username} прошёл вход (ID: {user_id})")
+
+
+
     
 
 # 📌 /admin

@@ -26,12 +26,20 @@ def check_user(user_id):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
-    result = c.fetchone()
+    row = c.fetchone()
     conn.close()
-    return result is not None
+
+    if row:
+        return {
+            "user_id": row[0],
+            "username": row[1],
+            "checked_in": row[2]
+        }
+    else:
+        return None
 
 def user_exists(user_id):
-    return check_user(user_id)  # можно оставить как alias
+    return check_user(user_id) is not None
 
 def is_checked_in(user_id):
     conn = sqlite3.connect(DB_NAME)
