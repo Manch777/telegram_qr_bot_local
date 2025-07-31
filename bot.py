@@ -96,32 +96,21 @@ async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # 📌 Запуск бота
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
-    
-    # 👇 Callback обработчик — ДО MessageHandler
-    app.add_handler(CallbackQueryHandler(button_handler, pattern="^check$"))
-    app.add_handler(MessageHandler(filters.TEXT, handle_webapp_data))
 
+    # 👉 Callback от Inline кнопки "Я подписался"
+    app.add_handler(CallbackQueryHandler(button_handler, pattern="^check$"))
+
+    # 👉 WebApp-данные от MiniApp
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_webapp_data))
+
+    # 👉 Команды
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("admin", admin))
     app.add_handler(CommandHandler("report", report))
 
+    # 👉 Другие Status Updates
+    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, start))
 
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_TITLE, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.PINNED_MESSAGE, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_PHOTO, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.MESSAGE_AUTO_DELETE_TIMER_CHANGED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.PROXIMITY_ALERT_TRIGGERED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_STARTED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_ENDED, start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.VIDEO_CHAT_SCHEDULED, start))
-
-
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, start))
-    app.add_handler(MessageHandler(filters.COMMAND, start))
-
-    
     logger.info("Bot started successfully")
     app.run_polling()
 
