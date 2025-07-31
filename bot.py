@@ -115,7 +115,7 @@ async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 # 📌 /admin
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    url = "https://manch777.github.io/qr-scanner/"  # заменить
+    url = "https://manch777.github.io/qr-scanner-test/"  # заменить
     keyboard = [[InlineKeyboardButton("📷 Открыть сканер", web_app=WebAppInfo(url=url))]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Сканируй QR-коды участников:", reply_markup=reply_markup)
